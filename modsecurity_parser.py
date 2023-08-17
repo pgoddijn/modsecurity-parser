@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """modsecurity_parser.py.
 Module to analyze modsecurity audit log and present output as:
   - json file (compatible with default JSON logging)
@@ -394,7 +396,10 @@ def modsec_view_graphs(modsec_dict):  # noqa: C901
     for entry_mod in modsec_dict:
         try:
             # Graph data for "TOP 10 IP source addresses"
-            src_ip_tab.append(entry_mod['transaction']['remote_address'])
+            # if '--x-forwarded-for'
+            src_ip_tab.append(safedictkey(entry_mod, ['request', 'headers', 'x-forwarded-for']))
+            # else
+#            src_ip_tab.append(entry_mod['transaction']['remote_address'])
 
             # Graph data for "Modsecurity Events reported vs intercepted"
             if (VERSION3 is False) and \
